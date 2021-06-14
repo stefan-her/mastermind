@@ -10,6 +10,7 @@ fun main(args: Array<String>) {
         val toFind = init(config["values"]!!, config["range"]!!)
         println(toFind)// ---> a mettre en comment
 
+        var exit = false
         var i = 0
         do {
             val choice = userAction(config["values"]!!, config["range"]!!)
@@ -19,10 +20,21 @@ fun main(args: Array<String>) {
             println(result)// ---> a mettre en comment
 
             val display = displayResult(result)
-            println(display)
+            var total : Int = 0
 
+            for (i in result.indices) {
+                total += result[i]!!
+            }
+
+            if (total == config["values"]) {
+                exit = true
+            }
+
+            println(display)
             i++
-        } while (i < config["loop"]!!)
+        } while (!exit && i < config["loop"]!!)
+
+        println("Quitté")
 
 
     } catch (e : VerifyError) { println(e.message) }
@@ -52,8 +64,7 @@ fun searchExact(v: Int, k: Int, list: List<Int>, result: MutableList<Int?>) : Mu
 }
 
 fun searchFalse (v: Int, k: Int, list: List<Int>, result: MutableList<Int?>) : MutableList<Int?> {
-    if (list.indexOf(v) != -1 && result[k] == null) { result[k] = 0 }
-    else if (list.indexOf(v) == -1 && result[k] == null) { result[k] = -1 }
+    if (list.indexOf(v) == -1) { result[k] = -1 }
     return result
 }
 
@@ -61,7 +72,7 @@ fun search(insertList : List<Int>, toFind : List<Int>, nbValues: Int) : MutableL
     var result : MutableList<Int?> = mutableListOf()
     var i = 0
     while (i < nbValues) {
-        result.add(null)
+        result.add(0)
         i++
     }
 
@@ -73,18 +84,6 @@ fun search(insertList : List<Int>, toFind : List<Int>, nbValues: Int) : MutableL
     return result
 }
 
-fun searchExact(insertList : List<Int>, toFind : List<Int>) : Int {
-    var nb = 0
-    var i = 0
-    do {
-        if (insertList[i] == toFind[i]) {
-            nb += 1
-        }
-        i++
-    } while (i < toFind.size)
-    return nb
-}
-
 fun init(nbValues: Int, rangeValue: Int) : List<Int> {
     var a = mutableListOf<Int>()
     var i = 0
@@ -92,11 +91,7 @@ fun init(nbValues: Int, rangeValue: Int) : List<Int> {
         a.add((0..rangeValue!!).random())
         i++
     }
-//    var a : MutableList<Int> = mutableListOf()
-//    a.add(0)
-//    a.add(1)
-//    a.add(2)
-//    a.add(3)
+
     return a.toList()
 }
 
